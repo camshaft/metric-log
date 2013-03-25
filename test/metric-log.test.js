@@ -115,6 +115,25 @@ describe("metric-log", function(){
         request3Context({test:"baz"});
         str.should.eql("host=my.other.host.com request_id=3 test=baz");
       });
+
+
+      it("should inherit recursively", function(){
+        var level1 = metric.context({level:1, level1: true}).use(context)
+          , level2 = metric.context({level:2, level2: true}).use(level1)
+          , level3 = metric.context({level:3, level3: true}).use(level2);
+
+        context({test:"foo"});
+        str.should.eql("host=my.host.com test=foo");
+
+        level1({test:"foo"});
+        str.should.eql("host=my.host.com level=1 level1=true test=foo");
+
+        level2({test:"foo"});
+        str.should.eql("host=my.host.com level=2 level1=true level2=true test=foo");
+
+        level3({test:"foo"});
+        str.should.eql("host=my.host.com level=3 level1=true level2=true level3=true test=foo");
+      });
     });
 
   });

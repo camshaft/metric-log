@@ -13,6 +13,11 @@ module.exports = exports = function metric() {
 };
 
 /**
+ * noop
+ */
+function noop () {};
+
+/**
  * Apply a context to the logger
  *
  * @param {Object} context
@@ -21,11 +26,15 @@ module.exports = exports = function metric() {
  */
 exports.context = function(obj) {
   function c() {
-    return log(merge(merge(merge({}, c.parent), obj), defaults.apply(null, arguments)));
+    return log(merge(c.inherit(), defaults.apply(null, arguments)));
   };
   c.use = function(parent) {
-    c.parent = parent.context || parent;
+    c.parent = parent || {};
     return c;
+  };
+  c.inherit = function() {
+    var parent = (c.parent.inherit || noop)() || clone(c.parent);
+    return merge(parent, c.context);
   };
   c.context = obj;
   c.parent = {};
@@ -46,6 +55,10 @@ function defaults(metric, value, units) {
   };
 };
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 function log(obj) {
   var out = Object.keys(obj).map(function(key) {
     // Turn any objects into json
@@ -56,7 +69,7 @@ function log(obj) {
 
   // Print the formatted metrics to STDOUT
   console.log(out);
-  
+
   return out;
 };
 
