@@ -86,17 +86,34 @@ describe("metric-log", function(){
       });
     });
 
-    describe("metric(obj)", function(){
+    describe("context(obj)", function(){
       it("should work", function() {
         context({testing: 123, hello: "world"});
         str.should.eql("host=my.host.com testing=123 hello=world");
       });
     });
 
-    describe("metric(deepObj)", function(){
+    describe("context(deepObj)", function(){
       it("should work", function() {
         context({testing: 123, hello: "world", deep: {test: 456}});
         str.should.eql('host=my.host.com testing=123 hello=world deep="{\"test\":456}"');
+      });
+    });
+
+    describe("context().use(parent)", function(){
+      it("should inherit context from a parent", function() {
+        var request1Context = metric.context({request_id:1}).use(context)
+          , request2Context = metric.context({request_id:2}).use(context)
+          , request3Context = metric.context({request_id:3}).use({host: "my.other.host.com"});
+
+        request1Context({test:"foo"});
+        str.should.eql("host=my.host.com request_id=1 test=foo");
+
+        request2Context({test:"bar"});
+        str.should.eql("host=my.host.com request_id=2 test=bar");
+
+        request3Context({test:"baz"});
+        str.should.eql("host=my.other.host.com request_id=3 test=baz");
       });
     });
 

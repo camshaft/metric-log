@@ -53,6 +53,27 @@ metric("response_time", 12, "ms");
   // host=my.host.com measure=response_time val=12 units=ms
 ```
 
+### metric.context(obj).use(parentContext)
+
+You can also inherit from parent contexts
+
+```js
+var express = require("express")
+  , metric = require("metric-log")
+  , parent = metric.context({host: "my.host.com"});
+
+var app = express();
+
+app.use(function(req, res, next) {
+  req.metric = metric.context({request_id: req.get("x-request-id")}).use(parent);
+});
+
+app.get("/", function(req, res) {
+  req.metric("home_page", 1);
+  // host=my.host.com request_id=12345 measure=home_page val=1
+});
+```
+
 Tests
 -----
 

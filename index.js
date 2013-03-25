@@ -8,9 +8,9 @@
  * @return {String}
  * @api public
  */
-module.exports = exports = function metric () {
+module.exports = exports = function metric() {
   return log(defaults.apply(null, arguments));
-}
+};
 
 /**
  * Apply a context to the logger
@@ -20,10 +20,17 @@ module.exports = exports = function metric () {
  * @api public
  */
 exports.context = function(obj) {
-  return function() {
-    return log(merge(merge({}, obj), defaults.apply(null, arguments)));
+  function c() {
+    return log(merge(merge(merge({}, c.parent), obj), defaults.apply(null, arguments)));
   };
-}
+  c.use = function(parent) {
+    c.parent = parent.context || parent;
+    return c;
+  };
+  c.context = obj;
+  c.parent = {};
+  return c;
+};
 
 function defaults(metric, value, units) {
   if (typeof metric === "string") {
@@ -37,21 +44,21 @@ function defaults(metric, value, units) {
   else {
     return metric;
   };
-}
+};
 
 function log(obj) {
   var out = Object.keys(obj).map(function(key) {
     // Turn any objects into json
     var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
     // If we have a space or quote we need to surround it in quotes
-    if(/[\" ]+/.test(value)) value = '"'+value.replace('"','\"')+'"';
-
-    return key+"="+value;
+    return key+"="+((/[\" ]+/.test(value)) ? '"'+value.replace('\\', '\\\\').replace('"','\"')+'"' : value);
   }).join(" ");
+
   // Print the formatted metrics to STDOUT
   console.log(out);
+  
   return out;
-}
+};
 
 function merge(a, b){
   if (a && b) {
