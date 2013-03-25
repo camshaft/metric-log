@@ -1,12 +1,14 @@
-metric-log
+metric-log [![Build Status](https://travis-ci.org/CamShaft/metric-log.png?branch=master)](https://travis-ci.org/CamShaft/metric-log)
 ==========
 
-Log metrics to STDOUT in a simple key=value format for easy parsing
+Log metrics to STDOUT in a simple key=value format for easy parsing.
 
 Install
 -------
 
-`npm install --save metric-log`
+```sh
+npm install --save metric-log
+```
 
 API
 -----
@@ -31,6 +33,8 @@ metric("response_time", 40, "ms");
 
 ### metric(obj)
 
+Complex objects can also be passed. Any nested objects/arrays will be converted to JSON.
+
 ```js
 var metric = require("metric-log");
 
@@ -40,13 +44,13 @@ metric({host: "my.host.com", service: "requests", metric: 5, tags: ["requests", 
 
 ### metric.context(obj)
 
-You can also setup a default context to be applied to each metric
+You can also setup a default context to be applied to each metric.
 
 ```js
 var metric = require("metric-log").context({host: "my.host.com"});
 
 metric("response_time", 12, "ms");
-  // host=my.host.com measure=response_time val=12 units=ms"
+  // host=my.host.com measure=response_time val=12 units=ms
 ```
 
 Tests
