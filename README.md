@@ -59,3 +59,32 @@ Tests
 ```sh
 npm test
 ```
+
+Benchmarks
+----------
+
+These were some benchmarks run on my MacBook Pro.
+
+```sh
+$ npm run-script bench
+
+․metric(measure, value) 
+   201207.24346076458 metrics/sec
+․metric(measure, value, units) 
+   191791.33103183736 metrics/sec
+․metric(obj) 
+   267379.67914438504 metrics/sec
+․metric(deepObj) 
+   136742.78681799537 metrics/sec
+․context(measure, value) 
+   157629.25598991173 metrics/sec
+․context(measure, value, units) 
+   143678.16091954024 metrics/sec
+․context(obj) 
+   156961.2305760477 metrics/sec
+․context(deepObj) 
+   109613.0658774526 metrics/sec
+
+
+  9 tests complete (50 seconds)
+```
