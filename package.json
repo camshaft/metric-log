@@ -4,7 +4,8 @@
   "description": "Log metrics with 'key=value'",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha test/metric-log.test",
+    "bench": "NODE_ENV=test ./node_modules/.bin/mocha test/metric-log.bench"
   },
   "repository": {
     "type": "git",

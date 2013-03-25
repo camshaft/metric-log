@@ -21,7 +21,7 @@ module.exports = exports = function metric () {
  */
 exports.context = function(obj) {
   return function() {
-    return log(merge(clone(obj), defaults.apply(null, arguments)));
+    return log(merge(merge({}, obj), defaults.apply(null, arguments)));
   };
 }
 
@@ -29,10 +29,9 @@ function defaults(metric, value, units) {
   if (typeof metric === "string") {
     var obj = {
       metric: metric,
-      val: value,
-      units: units
+      val: value
     };
-    if(!units) delete obj.units;
+    if(units) obj.units = units;
     return obj;
   }
   else {
@@ -52,10 +51,6 @@ function log(obj) {
   // Print the formatted metrics to STDOUT
   console.log(out);
   return out;
-}
-
-function clone(obj) {
-  return JSON.parse(JSON.stringify(obj));
 }
 
 function merge(a, b){
