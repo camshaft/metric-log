@@ -1,0 +1,26 @@
+{
+  "name": "metric-log",
+  "version": "0.1.0",
+  "description": "Log metrics with 'key=value'",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CamShaft/metric-log.git"
+  },
+  "keywords": [
+    "log",
+    "metrics",
+    "metric"
+  ],
+  "author": "Cameron Bytheway <cameron@nujii.com>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "ef161b4a611e4b4565993293c6f067b1f670034f",
+  "dependencies": {
+    "should": "~1.2.2",
+    "mocha": "~1.8.2"
+  }
+}
