@@ -1,6 +1,6 @@
 {
   "name": "metric-log",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Log metrics with 'key=value'",
   "main": "index.js",
   "scripts": {
