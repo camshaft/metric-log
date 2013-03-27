@@ -136,7 +136,7 @@ describe("metric-log", function(){
           str.should.match(/at=info/);
           str.should.match(/lib=my-lib/);
           done();
-        }, 50);
+        }, 55);
       });
     });
 
