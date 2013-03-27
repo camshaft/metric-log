@@ -74,9 +74,10 @@ function clone(obj) {
 }
 
 function log(obj) {
-  var out = Object.keys(obj).map(function(key) {
+  var out = Object.keys(obj).filter(function(key) {
     // Don't print 'key='
-    if(!obj[key] === '') return '';
+    return obj[key] !== '';
+  }).map(function(key) {
     // Turn any objects into json
     var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
     // If we have a space or quote we need to surround it in quotes

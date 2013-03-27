@@ -31,6 +31,11 @@ describe("metric-log", function(){
       metric("request", 'this is a "test"');
       str.should.eql('measure=request val="this is a \"test\""');
     });
+
+    it('should not print blank values', function() {
+      metric("request", '');
+      str.should.eql('measure=request');
+    });
   });
 
   describe("metric(metric, value, units)", function(){
