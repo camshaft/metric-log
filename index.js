@@ -34,7 +34,7 @@ exports.context = function(obj) {
   };
   c.inherit = function() {
     var parent = (c.parent.inherit || noop)() || clone(c.parent);
-    return merge(parent, c.context);
+    return merge(parent, c._context);
   };
   c.profile = function(id, props) {
     if (c._profiles[id]) {
@@ -46,7 +46,10 @@ exports.context = function(obj) {
       return c._profiles[id] = Date.now();
     }
   };
-  c.context = obj || {};
+  c.context = function(obj) {
+    return exports.context(obj).use(c);
+  };
+  c._context = obj || {};
   c.parent = {};
   c._profiles = {};
   return c;

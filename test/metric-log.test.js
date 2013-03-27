@@ -176,6 +176,15 @@ describe("metric-log", function(){
       });
     });
 
+    describe("context().context(obj)", function(){
+      it("should create a new context that uses the current as a base", function() {
+        var newContext = context.context({testing:123});
+
+        newContext({hello: 123});
+        str.should.eql("host=my.host.com testing=123 hello=123");
+      });
+    });
+
   });
 
 });
