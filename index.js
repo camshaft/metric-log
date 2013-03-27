@@ -40,7 +40,7 @@ exports.context = function(obj) {
     if (c._profiles[id]) {
       var time = Date.now() - c._profiles[id];
       delete c._profiles[id];
-      return log(merge({measure: id, val: time}, props || {}));
+      return log(merge({measure: id, val: time, units: "ms"}, props || {}));
     }
     else {
       return c._profiles[id] = Date.now();
