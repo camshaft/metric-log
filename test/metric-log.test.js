@@ -19,24 +19,24 @@ describe("metric-log", function(){
   describe("metric(metric, value)", function(){
     it("should work", function() {
       metric("request", 1);
-      str.should.eql("metric=request val=1");
+      str.should.eql("measure=request val=1");
     });
 
     it('should surround \' \' with "', function() {
       metric("request", "this is a test");
-      str.should.eql('metric=request val="this is a test"');
+      str.should.eql('measure=request val="this is a test"');
     });
 
     it('should escape "', function() {
       metric("request", 'this is a "test"');
-      str.should.eql('metric=request val="this is a \"test\""');
+      str.should.eql('measure=request val="this is a \"test\""');
     });
   });
 
   describe("metric(metric, value, units)", function(){
     it("should work", function() {
       metric("response_time", 1, "ms");
-      str.should.eql("metric=response_time val=1 units=ms");
+      str.should.eql("measure=response_time val=1 units=ms");
     });
   });
 
@@ -65,24 +65,24 @@ describe("metric-log", function(){
     describe("context(metric, value)", function(){
       it("should work", function(){
         context("request", 1);
-        str.should.eql("host=my.host.com metric=request val=1");
+        str.should.eql("host=my.host.com measure=request val=1");
       });
 
       it('should surround \' \' with "', function() {
         context("request", "this is a test");
-        str.should.eql('host=my.host.com metric=request val="this is a test"');
+        str.should.eql('host=my.host.com measure=request val="this is a test"');
       });
 
       it('should escape "', function() {
         context("request", 'this is a "test"');
-        str.should.eql('host=my.host.com metric=request val="this is a \"test\""');
+        str.should.eql('host=my.host.com measure=request val="this is a \"test\""');
       });
     });
 
     describe("context(metric, value, units)", function(){
       it("should work", function(){
         context("response_time", 1, "ms");
-        str.should.eql("host=my.host.com metric=response_time val=1 units=ms");
+        str.should.eql("host=my.host.com measure=response_time val=1 units=ms");
       });
     });
 
@@ -97,6 +97,32 @@ describe("metric-log", function(){
       it("should work", function() {
         context({testing: 123, hello: "world", deep: {test: 456}});
         str.should.eql('host=my.host.com testing=123 hello=world deep="{\"test\":456}"');
+      });
+    });
+
+    describe("context.profile(id)", function(){
+      it("should profile a function call", function(done) {
+        context.profile('my-api-test-call');
+        setTimeout(function() {
+          context.profile('my-api-test-call');
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/val=5/);
+          done();
+        }, 50);
+      });
+    });
+
+    describe("context.profile(id, obj)", function(){
+      it("should profile a function call and merge some properties", function(done) {
+        context.profile('my-api-test-call');
+        setTimeout(function() {
+          context.profile('my-api-test-call', {at:"info", lib:"my-lib"});
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/val=5/);
+          str.should.match(/at=info/);
+          str.should.match(/lib=my-lib/);
+          done();
+        }, 50);
       });
     });
 

@@ -36,15 +36,26 @@ exports.context = function(obj) {
     var parent = (c.parent.inherit || noop)() || clone(c.parent);
     return merge(parent, c.context);
   };
-  c.context = obj;
+  c.profile = function(id, props) {
+    if (c._profiles[id]) {
+      var time = Date.now() - c._profiles[id];
+      delete c._profiles[id];
+      return log(merge({measure: id, val: time}, props || {}));
+    }
+    else {
+      return c._profiles[id] = Date.now();
+    }
+  };
+  c.context = obj || {};
   c.parent = {};
+  c._profiles = {};
   return c;
 };
 
 function defaults(metric, value, units) {
   if (typeof metric === "string") {
     var obj = {
-      metric: metric,
+      measure: metric,
       val: value
     };
     if(units) obj.units = units;
