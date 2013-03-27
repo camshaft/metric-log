@@ -40,7 +40,7 @@ exports.context = function(obj) {
     if (c._profiles[id]) {
       var time = Date.now() - c._profiles[id];
       delete c._profiles[id];
-      return log(merge({measure: id, val: time, units: "ms"}, props || {}));
+      return c(id, time, "ms", props);
     }
     else {
       return c._profiles[id] = Date.now();
@@ -52,14 +52,14 @@ exports.context = function(obj) {
   return c;
 };
 
-function defaults(metric, value, units) {
+function defaults(metric, value, units, props) {
   if (typeof metric === "string") {
     var obj = {
       measure: metric,
       val: value
     };
     if(units) obj.units = units;
-    return obj;
+    return props ? merge(obj, props) : obj;
   }
   else {
     return metric;

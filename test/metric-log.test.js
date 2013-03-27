@@ -40,6 +40,13 @@ describe("metric-log", function(){
     });
   });
 
+  describe("metric(metric, value, units, props)", function(){
+    it("should work", function() {
+      metric("response_time", 1, "ms", {testing: 123});
+      str.should.eql("measure=response_time val=1 units=ms testing=123");
+    });
+  });
+
   describe("metric(obj)", function(){
     it("should work", function() {
       metric({testing: 123, hello: "world"});
@@ -83,6 +90,13 @@ describe("metric-log", function(){
       it("should work", function(){
         context("response_time", 1, "ms");
         str.should.eql("host=my.host.com measure=response_time val=1 units=ms");
+      });
+    });
+
+    describe("context(metric, value, units, props)", function(){
+      it("should work", function() {
+        context("response_time", 1, "ms", {testing: 123});
+        str.should.eql("host=my.host.com measure=response_time val=1 units=ms testing=123");
       });
     });
 

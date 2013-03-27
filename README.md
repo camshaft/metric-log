@@ -31,6 +31,15 @@ metric("response_time", 40, "ms");
   // measure=response_time val=40 units=ms
 ```
 
+### metric(measure, value, units, obj)
+
+```js
+var metric = require("metric-log");
+
+metric("response_time", 40, "ms", {lib:'my-lib'});
+  // measure=response_time val=40 units=ms lib=my-lib
+```
+
 ### metric(obj)
 
 Complex objects can also be passed. Any nested objects/arrays will be converted to JSON.
