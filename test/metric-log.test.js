@@ -133,6 +133,23 @@ describe("metric-log", function(){
       });
     });
 
+    describe("context.profileSafe(id)", function(){
+      it("should allow interlieved profile calls with same id", function(done) {
+        var call1 = context.profileSafe('my-api-test-call', {callId: 1}),
+            call2 = context.profileSafe('my-api-test-call', {callId: 2});
+        setTimeout(function() {
+          context.profileSafe(call2);
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/callId=2/);
+
+          context.profileSafe(call1);
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/callId=1/);
+          done();
+        }, 50);
+      });
+    });
+
     describe("context.profile(id)", function(){
       it("should profile a function call", function(done) {
         var end = context.profile('my-api-test-call');

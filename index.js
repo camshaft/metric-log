@@ -24,6 +24,11 @@ exports.profile = function(metric, props) {
  */
 function noop () {};
 
+var idGen = Date.now();
+function nextId() {
+  return ++idGen;
+}
+
 /**
  * Apply a context to the logger
  *
@@ -48,6 +53,26 @@ exports.context = function(obj) {
     return function(otherProps) {
       return c(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
     };
+  };
+  c.profileSafe = function(id, props) {
+    var prof;
+    if (c._profiles[id]) {
+      prof = c._profiles[id];
+      var time = Date.now() - prof.start,
+          finalProps = merge(prof.props, props || {});
+      delete c._profiles[id];
+      return c(prof.id, time, "ms", finalProps);
+    }
+    else {
+      prof = {
+        start: Date.now(),
+        profId: nextId(),
+        id: id,
+        props: props || {}
+      };
+      c._profiles[prof.profId] = prof;
+      return prof.profId;
+    }
   };
   c.context = function(obj) {
     return exports.context(obj).use(c);
