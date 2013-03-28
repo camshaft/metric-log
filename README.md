@@ -85,15 +85,15 @@ app.get("/", function(req, res) {
 
 ### metric.profile(id[, obj])
 
-Helper function to profile processes like calling an api or database. In a concurrent environment, it's a good idea to setup a context for this so the profiling doesn't overlap with other callbacks.
+Helper function to profile processes like calling an api or database.
 
 ```js
-var metric = require('metric').context();
+var metric = require('metric');
 
-metric.profile('my-api-call');
+var end = metric.profile('my-api-call');
 
 api('id', function(err, result){
-  metric.profile('my-api-call');
+  end();
   // measure=my-api-call val=203 units=ms
 });
 ```
@@ -101,8 +101,12 @@ api('id', function(err, result){
 You can also pass some metrics as a second parameter
 
 ```js
-metric.profile('my-api-call', {at:"info", lib:"my-lib"});
-// measure=my-api-call val=203 units=ms at=info lib=my-lib
+var end = metric.profile('my-api-call', {at:"info", lib:"my-lib"});
+
+api('id', function(err, result){
+  end({err:err});
+  // measure=my-api-call val=203 units=ms at=info lib=my-lib err=null
+});
 ```
 
 Tests

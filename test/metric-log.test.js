@@ -29,7 +29,7 @@ describe("metric-log", function(){
 
     it('should escape "', function() {
       metric("request", 'this is a "test"');
-      str.should.eql('measure=request val="this is a \"test\""');
+      str.should.eql('measure=request val="this is a \\\"test\\\""');
     });
 
     it('should not print blank values', function() {
@@ -62,7 +62,21 @@ describe("metric-log", function(){
   describe("metric(deepObj)", function(){
     it("should work", function() {
       metric({testing: 123, hello: "world", deep: {test: 456}});
-      str.should.eql('testing=123 hello=world deep="{\"test\":456}"');
+      str.should.eql('testing=123 hello=world deep="{\\\"test\\\":456}"');
+    });
+  });
+
+  describe("metric.profile()", function() {
+    it("should return a callable function to profile", function(done) {
+      var profile = metric.profile("testing123");
+      setTimeout(function() {
+        profile({test:123});
+
+        str.should.match(/test=123/);
+        str.should.match(/measure=testing123/);
+
+        done();
+      }, 50);
     });
   });
 
@@ -87,7 +101,7 @@ describe("metric-log", function(){
 
       it('should escape "', function() {
         context("request", 'this is a "test"');
-        str.should.eql('host=my.host.com measure=request val="this is a \"test\""');
+        str.should.eql('host=my.host.com measure=request val="this is a \\\"test\\\""');
       });
     });
 
@@ -115,17 +129,17 @@ describe("metric-log", function(){
     describe("context(deepObj)", function(){
       it("should work", function() {
         context({testing: 123, hello: "world", deep: {test: 456}});
-        str.should.eql('host=my.host.com testing=123 hello=world deep="{\"test\":456}"');
+        str.should.eql('host=my.host.com testing=123 hello=world deep="{\\\"test\\\":456}"');
       });
     });
 
     describe("context.profile(id)", function(){
       it("should profile a function call", function(done) {
-        context.profile('my-api-test-call');
+        var end = context.profile('my-api-test-call');
         setTimeout(function() {
-          context.profile('my-api-test-call');
+          end();
           str.should.match(/measure=my-api-test-call/);
-          str.should.match(/val=5/);
+          str.should.match(/val=[0-9]+/);
           done();
         }, 50);
       });
@@ -133,11 +147,11 @@ describe("metric-log", function(){
 
     describe("context.profile(id, obj)", function(){
       it("should profile a function call and merge some properties", function(done) {
-        context.profile('my-api-test-call');
+        var end = context.profile('my-api-test-call');
         setTimeout(function() {
-          context.profile('my-api-test-call', {at:"info", lib:"my-lib"});
+          end({at:"info", lib:"my-lib"});
           str.should.match(/measure=my-api-test-call/);
-          str.should.match(/val=5/);
+          str.should.match(/val=[0-9]+/);
           str.should.match(/at=info/);
           str.should.match(/lib=my-lib/);
           done();
@@ -188,6 +202,25 @@ describe("metric-log", function(){
         newContext({hello: 123});
         str.should.eql("host=my.host.com testing=123 hello=123");
       });
+    });
+
+    describe("concurrent profile", function() {
+      it("should handle concurrent profile calls", function(done) {
+        var call1 = context.profile('my-api-test-call')
+          , call2 = context.profile('my-api-test-call');
+
+        setTimeout(function() {
+          call2({callId:2});
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/callId=2/);
+
+          call1({callId:1});
+          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/callId=1/);
+          done();
+        }, 50);
+      });
+
     });
 
   });

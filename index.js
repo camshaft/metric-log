@@ -12,6 +12,13 @@ module.exports = exports = function metric() {
   return log(defaults.apply(null, arguments));
 };
 
+exports.profile = function(metric, props) {
+  var start = Date.now();
+  return function(otherProps) {
+    return exports(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
+  };
+};
+
 /**
  * noop
  */
@@ -36,22 +43,17 @@ exports.context = function(obj) {
     var parent = (c.parent.inherit || noop)() || clone(c.parent);
     return merge(parent, c._context);
   };
-  c.profile = function(id, props) {
-    if (c._profiles[id]) {
-      var time = Date.now() - c._profiles[id];
-      delete c._profiles[id];
-      return c(id, time, "ms", props);
-    }
-    else {
-      return c._profiles[id] = Date.now();
-    }
+  c.profile = function(metric, props) {
+    var start = Date.now();
+    return function(otherProps) {
+      return c(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
+    };
   };
   c.context = function(obj) {
     return exports.context(obj).use(c);
   };
   c._context = obj || {};
   c.parent = {};
-  c._profiles = {};
   return c;
 };
 
@@ -81,7 +83,7 @@ function log(obj) {
     // Turn any objects into json
     var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
     // If we have a space or quote we need to surround it in quotes
-    return key+"="+((/[\" ]+/.test(value)) ? '"'+value.replace('\\', '\\\\').replace('"','\"')+'"' : value);
+    return key+"="+((/[\"\\ ]+/.test(value)) ? '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"' : value);
   }).join(" ");
 
   // Print the formatted metrics to STDOUT
