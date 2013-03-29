@@ -8,7 +8,7 @@
  * @api public
  */
 module.exports = exports = function metric() {
-  return log(defaults.apply(null, arguments));
+  return exports.log(exports.format(defaults.apply(null, arguments)));
 };
 
 exports.profile = function(metric, props) {
@@ -37,7 +37,7 @@ function noop () {};
  */
 exports.context = function(obj) {
   function c() {
-    return log(merge(c.inherit(), defaults.apply(null, arguments)));
+    return exports.log(exports.format(merge(c.inherit(), defaults.apply(null, arguments))));
   };
   c.use = function(parent) {
     c.parent = parent || {};
@@ -61,6 +61,19 @@ exports.context = function(obj) {
   return c;
 };
 
+exports.format = function (obj) {
+  var out = Object.keys(obj).filter(function(key) {
+    // Don't print 'key='
+    return obj[key] !== '';
+  }).map(function(key) {
+    // Turn any objects into json
+    var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
+    // If we have a space or quote we need to surround it in quotes
+    return key+"="+((/[\"\\ ]+/.test(value)) ? '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"' : value);
+  }).join(" ");
+  return out;
+};
+
 function defaults(metric, value, units, props) {
   if (typeof metric === "string") {
     var obj = {
@@ -78,23 +91,6 @@ function defaults(metric, value, units, props) {
 function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-
-function log(obj) {
-  var out = Object.keys(obj).filter(function(key) {
-    // Don't print 'key='
-    return obj[key] !== '';
-  }).map(function(key) {
-    // Turn any objects into json
-    var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
-    // If we have a space or quote we need to surround it in quotes
-    return key+"="+((/[\"\\ ]+/.test(value)) ? '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"' : value);
-  }).join(" ");
-
-  // Print the formatted metrics to STDOUT
-  exports.log(out);
-
-  return out;
-};
 
 function merge(a, b){
   if (a && b) {
