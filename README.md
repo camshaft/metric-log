@@ -1,7 +1,7 @@
 metric-log [![Build Status](https://travis-ci.org/CamShaft/metric-log.png?branch=master)](https://travis-ci.org/CamShaft/metric-log)
 ==========
 
-Log metrics to STDOUT in a simple key=value format for easy parsing.
+Log metrics in a simple key=value format for easy parsing.
 
 Install
 -------

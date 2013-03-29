@@ -1,0 +1,13 @@
+{
+  "name": "metric-log",
+  "repo": "CamShaft/metric-log",
+  "description": "Log metrics in a simple key=value format for easy parsing",
+  "version": "0.2.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ]
+}
