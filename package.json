@@ -1,6 +1,6 @@
 {
   "name": "metric-log",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Log metrics with 'key=value'",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,6 @@
   "author": "Cameron Bytheway <cameron@nujii.com>",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "ef161b4a611e4b4565993293c6f067b1f670034f",
   "devDependencies": {
     "should": "~1.2.2",
     "mocha": "~1.8.2"

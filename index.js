@@ -1,5 +1,5 @@
 /**
- * Log formatted metrics to STDOUT
+ * Log formatted metrics
  *
  * @param {Object|String} metric
  * @param {String|Number|Object} value

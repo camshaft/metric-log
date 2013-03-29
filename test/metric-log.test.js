@@ -5,15 +5,11 @@ describe("metric-log", function(){
 
   var log, str;
 
-  beforeEach(function() {
-    log = console.log;
-    console.log = function(fmt) {
+  before(function() {
+    // Don't print to stdout
+    metric.log = function(fmt) {
       str = fmt;
     };
-  });
-
-  afterEach(function() {
-    console.log = log;
   });
 
   describe("metric(metric, value)", function(){
