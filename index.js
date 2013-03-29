@@ -21,7 +21,7 @@ exports.profile = function(metric, props) {
 /**
  * Expose log function
  */
-exports.log = console.log;
+exports.log = console.log.bind(console);
 
 /**
  * noop
