@@ -1,4 +1,3 @@
-
 /**
  * Log formatted metrics to STDOUT
  *
@@ -18,6 +17,11 @@ exports.profile = function(metric, props) {
     return exports(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
   };
 };
+
+/**
+ * Expose log function
+ */
+exports.log = console.log;
 
 /**
  * noop
@@ -87,7 +91,7 @@ function log(obj) {
   }).join(" ");
 
   // Print the formatted metrics to STDOUT
-  console.log(out);
+  exports.log(out);
 
   return out;
 };
