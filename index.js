@@ -27,13 +27,38 @@ module.exports = exports = function metric() {
 exports.log = console.log.bind(console);
 
 /**
+ * Create the root context
+ */
+exports._root = root = createContext();
+
+/**
+ * Extend the root context
+ */
+exports.context = root.context.bind(root);
+
+/**
+ * Profile a function call in the root context
+ */
+exports.profile = root.profile.bind(root);
+
+/**
+ * Expose setting the root's __proto__
+ */
+exports.use = root.use.bind(root);
+
+/**
+ * Expose root format
+ */
+exports.format = root.format.bind(root);
+
+/**
  * Apply a context to the logger
  *
  * @param {Object} context
  * @return {Logger}
  * @api public
  */
-exports.context = function(obj) {
+function createContext(obj) {
   // Create a new context
   function Context() {
     return (Context.log || exports.log)(Context.format.apply(Context, arguments));
@@ -53,31 +78,11 @@ exports.context = function(obj) {
   // Expose extending the context
   Context.context =
   Context.extend = function(child) {
-    return exports.context(child).use(obj);
+    return createContext(child).use(obj);
   };
 
   return Context;
 };
-
-/**
- * Create the root context
- */
-exports._root = root = exports.context();
-
-/**
- * Profile a function call in the root context
- */
-exports.profile = root.profile.bind(root);
-
-/**
- * Profile a function call in the root context
- */
-exports.profile = root.profile.bind(root);
-
-/**
- * Expose root format
- */
-exports.format = root.format.bind(root);
 
 /**
  * Format an object in key=value pairs

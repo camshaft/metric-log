@@ -12,6 +12,10 @@ describe("metric-log", function(){
     };
   });
 
+  afterEach(function() {
+    str = "";
+  });
+
   describe("metric(metric, value)", function(){
     it("should work", function() {
       metric("request", 1);

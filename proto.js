@@ -1,11 +1,16 @@
 /**
- * Prototype
+ * Module dependencies
+ */
+
+/**
+ * Context Prototype
  */
 var proto = {}
 
 /**
  * Format the metric
  *
+ * @return {Object}
  * @api public
  */
 proto.merge = function() {
@@ -17,6 +22,8 @@ proto.merge = function() {
 /**
  * Use a parent context
  *
+ * @param {Object} parent
+ * @return {Context}
  * @api public
  */
 proto.use = function(parent) {
@@ -29,7 +36,7 @@ proto.use = function(parent) {
  * Profile a call
  *
  * @param {String} metric
- * @param {Obj} props
+ * @param {Object} props
  * @return {Function}
  * @api public
  */
@@ -39,6 +46,8 @@ proto.profile = function(metric, props) {
 
   return function(otherProps) {
     if(!otherProps) otherProps = {};
+    else otherProps = clone(otherProps);
+
     otherProps.__proto__ = props;
     return self(metric, (Date.now() - start), "ms", otherProps);
   };
@@ -67,7 +76,7 @@ function defaults(metric, value, units, props) {
     return obj;
   }
   else {
-    return metric;
+    return clone(metric);
   };
 };
 
@@ -76,11 +85,20 @@ function defaults(metric, value, units, props) {
  *
  * @api private
  */
-function merge(a, b){
+function merge(a, b) {
   if (a && b) {
     for (var key in b) {
       a[key] = b[key];
     }
   }
   return a;
+};
+
+/**
+ * Clone an object's properties
+ *
+ * @api private
+ */
+function clone(obj) {
+  return merge({}, obj);
 };
