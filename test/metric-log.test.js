@@ -87,45 +87,45 @@ describe("metric-log", function(){
     describe("context(metric, value)", function(){
       it("should work", function(){
         context("request", 1);
-        str.should.eql("host=my.host.com measure=request val=1");
+        str.should.eql("measure=request val=1 host=my.host.com");
       });
 
       it('should surround \' \' with "', function() {
         context("request", "this is a test");
-        str.should.eql('host=my.host.com measure=request val="this is a test"');
+        str.should.eql('measure=request val="this is a test" host=my.host.com');
       });
 
       it('should escape "', function() {
         context("request", 'this is a "test"');
-        str.should.eql('host=my.host.com measure=request val="this is a \\\"test\\\""');
+        str.should.eql('measure=request val="this is a \\\"test\\\"" host=my.host.com');
       });
     });
 
     describe("context(metric, value, units)", function(){
       it("should work", function(){
         context("response_time", 1, "ms");
-        str.should.eql("host=my.host.com measure=response_time val=1 units=ms");
+        str.should.eql("measure=response_time val=1 units=ms host=my.host.com");
       });
     });
 
     describe("context(metric, value, units, props)", function(){
       it("should work", function() {
         context("response_time", 1, "ms", {testing: 123});
-        str.should.eql("host=my.host.com measure=response_time val=1 units=ms testing=123");
+        str.should.eql("measure=response_time val=1 units=ms testing=123 host=my.host.com");
       });
     });
 
     describe("context(obj)", function(){
       it("should work", function() {
         context({testing: 123, hello: "world"});
-        str.should.eql("host=my.host.com testing=123 hello=world");
+        str.should.eql("testing=123 hello=world host=my.host.com");
       });
     });
 
     describe("context(deepObj)", function(){
       it("should work", function() {
         context({testing: 123, hello: "world", deep: {test: 456}});
-        str.should.eql('host=my.host.com testing=123 hello=world deep="{\\\"test\\\":456}"');
+        str.should.eql('testing=123 hello=world deep="{\\\"test\\\":456}" host=my.host.com');
       });
     });
 
@@ -162,13 +162,13 @@ describe("metric-log", function(){
           , request3Context = metric.context({request_id:3}).use({host: "my.other.host.com"});
 
         request1Context({test:"foo"});
-        str.should.eql("host=my.host.com request_id=1 test=foo");
+        str.should.eql("test=foo request_id=1 host=my.host.com");
 
         request2Context({test:"bar"});
-        str.should.eql("host=my.host.com request_id=2 test=bar");
+        str.should.eql("test=bar request_id=2 host=my.host.com");
 
         request3Context({test:"baz"});
-        str.should.eql("host=my.other.host.com request_id=3 test=baz");
+        str.should.eql("test=baz request_id=3 host=my.other.host.com");
       });
 
 
@@ -178,16 +178,16 @@ describe("metric-log", function(){
           , level3 = metric.context({level:3, level3: true}).use(level2);
 
         context({test:"foo"});
-        str.should.eql("host=my.host.com test=foo");
+        str.should.eql("test=foo host=my.host.com");
 
         level1({test:"foo"});
-        str.should.eql("host=my.host.com level=1 level1=true test=foo");
+        str.should.eql("test=foo level=1 level1=true host=my.host.com");
 
         level2({test:"foo"});
-        str.should.eql("host=my.host.com level=2 level1=true level2=true test=foo");
+        str.should.eql("test=foo level=2 level2=true level1=true host=my.host.com");
 
         level3({test:"foo"});
-        str.should.eql("host=my.host.com level=3 level1=true level2=true level3=true test=foo");
+        str.should.eql("test=foo level=3 level3=true level2=true level1=true host=my.host.com");
       });
     });
 
@@ -196,7 +196,7 @@ describe("metric-log", function(){
         var newContext = context.context({testing:123});
 
         newContext({hello: 123});
-        str.should.eql("host=my.host.com testing=123 hello=123");
+        str.should.eql("hello=123 testing=123 host=my.host.com");
       });
     });
 

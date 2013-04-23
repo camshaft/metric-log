@@ -125,22 +125,22 @@ These were some benchmarks run on my MacBook Pro.
 $ npm run-script bench
 
 ․metric(measure, value) 
-   201207.24346076458 metrics/sec
+   885739.5925597874 metrics/sec
 ․metric(measure, value, units) 
-   191791.33103183736 metrics/sec
+   787401.5748031496 metrics/sec
 ․metric(obj) 
-   267379.67914438504 metrics/sec
+   1901140.6844106463 metrics/sec
 ․metric(deepObj) 
-   136742.78681799537 metrics/sec
+   344589.9379738112 metrics/sec
 ․context(measure, value) 
-   157629.25598991173 metrics/sec
+   372023.8095238095 metrics/sec
 ․context(measure, value, units) 
-   143678.16091954024 metrics/sec
+   318066.15776081424 metrics/sec
 ․context(obj) 
-   156961.2305760477 metrics/sec
+   365363.5367190354 metrics/sec
 ․context(deepObj) 
-   109613.0658774526 metrics/sec
+   195694.71624266144 metrics/sec
 
 
-  9 tests complete (50 seconds)
+  8 tests complete (20 seconds)
 ```

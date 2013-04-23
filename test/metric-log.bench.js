@@ -4,16 +4,18 @@ var ITERATIONS = 1000000;
 
 describe("metric-log-benchmarks", function(){
 
-  var log, start, suite;
+  var start, suite;
+
+  before(function() {
+    // Don't print to stdout
+    metric.log = function() {};
+  });
 
   beforeEach(function() {
-    log = console.log;
-    console.log = function() {};
     start = new Date;
   });
 
   afterEach(function() {
-    console.log = log;
     console.log(suite, "\n\t", ITERATIONS/((new Date - start)/1000), "metrics/sec");
   });
 

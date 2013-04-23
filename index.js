@@ -1,4 +1,14 @@
 /**
+ * Module dependencies
+ */
+var proto = require("./proto");
+
+/**
+ * Root context
+ */
+var root;
+
+/**
  * Log formatted metrics
  *
  * @param {Object|String} metric
@@ -8,25 +18,13 @@
  * @api public
  */
 module.exports = exports = function metric() {
-  return exports.log(exports.format(defaults.apply(null, arguments)));
-};
-
-exports.profile = function(metric, props) {
-  var start = Date.now();
-  return function(otherProps) {
-    return exports(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
-  };
+  return root.apply(root, arguments);
 };
 
 /**
  * Expose log function
  */
 exports.log = console.log.bind(console);
-
-/**
- * noop
- */
-function noop () {};
 
 /**
  * Apply a context to the logger
@@ -36,67 +34,79 @@ function noop () {};
  * @api public
  */
 exports.context = function(obj) {
-  function c() {
-    return exports.log(exports.format(merge(c.inherit(), defaults.apply(null, arguments))));
+  // Create a new context
+  function Context() {
+    return (Context.log || exports.log)(Context.format.apply(Context, arguments));
   };
-  c.use = function(parent) {
-    c.parent = parent || {};
-    return c;
+
+  // Setup the context obj
+  Context._context = obj || {};
+
+  // Merge the prototype
+  proto(Context);
+
+  // Expose formatting the context
+  Context.format = function() {
+    return format(Context.merge.apply(Context, arguments));
   };
-  c.inherit = function() {
-    var parent = (c.parent.inherit || noop)() || clone(c.parent);
-    return merge(parent, c._context);
+
+  // Expose extending the context
+  Context.context =
+  Context.extend = function(child) {
+    return exports.context(child).use(obj);
   };
-  c.profile = function(metric, props) {
-    var start = Date.now();
-    return function(otherProps) {
-      return c(metric, (Date.now() - start), "ms", merge(props||{}, otherProps));
-    };
-  };
-  c.context = function(obj) {
-    return exports.context(obj).use(c);
-  };
-  c._context = obj || {};
-  c.parent = {};
-  return c;
+
+  return Context;
 };
 
-exports.format = function (obj) {
-  var out = Object.keys(obj).filter(function(key) {
-    // Don't print 'key='
-    return obj[key] !== '';
-  }).map(function(key) {
-    // Turn any objects into json
-    var value = (typeof obj[key] === "object") ? JSON.stringify(obj[key]) : obj[key];
-    // If we have a space or quote we need to surround it in quotes
-    return key+"="+((/[\"\\ ]+/.test(value)) ? '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"' : value);
-  }).join(" ");
-  return out;
+/**
+ * Create the root context
+ */
+exports._root = root = exports.context();
+
+/**
+ * Profile a function call in the root context
+ */
+exports.profile = root.profile.bind(root);
+
+/**
+ * Profile a function call in the root context
+ */
+exports.profile = root.profile.bind(root);
+
+/**
+ * Expose root format
+ */
+exports.format = root.format.bind(root);
+
+/**
+ * Format an object in key=value pairs
+ *
+ * @param {Object} obj
+ * @api private
+ */
+function format(obj) {
+  // Get all of the keys for the context
+  var keys = [];
+  for(var key in obj) if(obj[key] !== '') keys.push(join(key, obj[key]));
+
+  // Join the key=value
+  return keys.join(" ");
 };
 
-function defaults(metric, value, units, props) {
-  if (typeof metric === "string") {
-    var obj = {
-      measure: metric,
-      val: value
-    };
-    if(units) obj.units = units;
-    return props ? merge(obj, props) : obj;
-  }
-  else {
-    return metric;
-  };
-};
+/**
+ * Escape the value and join the key=value
+ *
+ * @param {String}
+ * @param {Object|String|Number}
+ * @return {String}
+ */
+function join(key, value) {
+  // Turn any objects into json
+  if(typeof value === "object") value = JSON.stringify(value);
 
-function clone(obj) {
-  return JSON.parse(JSON.stringify(obj));
+  // If we have a space or quote we need to surround it in quotes
+  if(/[\"\\ ]+/.test(value)) value = '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"';
+
+  return key+"="+value;
 }
-
-function merge(a, b){
-  if (a && b) {
-    for (var key in b) {
-      a[key] = b[key];
-    }
-  }
-  return a;
-};
