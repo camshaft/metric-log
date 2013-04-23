@@ -4,7 +4,9 @@
   "description": "Log metrics in a simple key=value format for easy parsing",
   "version": "0.2.3",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "visionmedia/debug": "*"
+  },
   "development": {},
   "license": "MIT",
   "scripts": [

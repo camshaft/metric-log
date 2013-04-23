@@ -159,6 +159,14 @@ describe("metric-log", function(){
       });
     });
 
+    describe("context(obj).debug()", function(){
+      it("should filter logs", function() {
+        var child = context.extend({fn: "metric-log.test", at: "debug"}).debug();
+        child({test: 123});
+        str.should.eql("");
+      });
+    });
+
     describe("context().use(parent)", function(){
       it("should inherit context from a parent", function() {
         var request1Context = metric.context({request_id:1}).use(context)

@@ -1,6 +1,7 @@
 /**
  * Module dependencies
  */
+var debug = require("debug");
 
 /**
  * Context Prototype
@@ -51,6 +52,19 @@ proto.profile = function(metric, props) {
     otherProps.__proto__ = props;
     return self(metric, (Date.now() - start), "ms", otherProps);
   };
+};
+
+/**
+ * Set debug mode for the context
+ *
+ * @param {String} name
+ * @return {Context}
+ */
+proto.debug = function(name) {
+  var context = this._context;
+  if(!name) name = context.fn && context.at ? ""+context.fn+":"+context.at : "metric:debug";
+  this.log = debug(name);
+  return this;
 };
 
 /**
