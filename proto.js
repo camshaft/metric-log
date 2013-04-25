@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-var debug = require("debug");
+var debug = require("simple-debug");
 
 /**
  * Context Prototype

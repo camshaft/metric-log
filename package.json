@@ -20,7 +20,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "debug": "~0.7.2"
+    "simple-debug": "~1.0.0"
   },
   "devDependencies": {
     "should": "~1.2.2",
