@@ -12,8 +12,9 @@ var root;
  * Log formatted metrics
  *
  * @param {Object|String} metric
- * @param {String|Number|Object} value
- * @param {String} units
+ * @param {Object|String|Number} val
+ * @param {String} unit
+ * @param {Object} props
  * @return {String}
  * @api public
  */
@@ -70,11 +71,6 @@ function createContext(obj) {
   // Merge the prototype
   proto(Context);
 
-  // Expose formatting the context
-  Context.format = function() {
-    return format(Context.merge.apply(Context, arguments));
-  };
-
   // Expose extending the context
   Context.context =
   Context.extend = function(child) {
@@ -83,35 +79,3 @@ function createContext(obj) {
 
   return Context;
 };
-
-/**
- * Format an object in key=value pairs
- *
- * @param {Object} obj
- * @api private
- */
-function format(obj) {
-  // Get all of the keys for the context
-  var keys = [];
-  for(var key in obj) if(obj[key] !== '') keys.push(join(key, obj[key]));
-
-  // Join the key=value
-  return keys.join(" ");
-};
-
-/**
- * Escape the value and join the key=value
- *
- * @param {String}
- * @param {Object|String|Number}
- * @return {String}
- */
-function join(key, value) {
-  // Turn any objects into json
-  if(typeof value === "object") value = JSON.stringify(value);
-
-  // If we have a space or quote we need to surround it in quotes
-  if(/[\"\\ ]+/.test(value)) value = '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"';
-
-  return key+"="+value;
-}

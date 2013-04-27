@@ -11,6 +11,10 @@ var proto = {}
 /**
  * Format the metric
  *
+ * @param {Object|String} metric
+ * @param {Object|String|Number} val
+ * @param {String} unit
+ * @param {Object} props
  * @return {Object}
  * @api public
  */
@@ -59,6 +63,7 @@ proto.profile = function(metric, props) {
  *
  * @param {String} name
  * @return {Context}
+ * @api public
  */
 proto.debug = function(name) {
   var context = this._context;
@@ -68,7 +73,25 @@ proto.debug = function(name) {
 };
 
 /**
+ * Format the context obj
+ *
+ * @param {Object|String} metric
+ * @param {Object|String|Number} val
+ * @param {String} unit
+ * @param {Object} props
+ * @return {String}
+ * @api public
+ */
+proto.format = function() {
+  return format(this.merge.apply(this, arguments));
+};
+
+/**
  * Inherit the proto
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api public
  */
 module.exports = function(obj) {
   return merge(obj, proto);
@@ -77,6 +100,11 @@ module.exports = function(obj) {
 /**
  * Set the default parameters
  *
+ * @param {Object|String} metric
+ * @param {Object|String|Number} val
+ * @param {String} unit
+ * @param {Object} props
+ * @return {Object}
  * @api private
  */
 function defaults(metric, value, units, props) {
@@ -95,8 +123,45 @@ function defaults(metric, value, units, props) {
 };
 
 /**
+ * Format an object in key=value pairs
+ *
+ * @param {Object} obj
+ * @return {String}
+ * @api private
+ */
+function format(obj) {
+  // Get all of the keys for the context
+  var keys = [];
+  for(var key in obj) if(obj[key] !== '') keys.push(join(key, obj[key]));
+
+  // Join the key=value
+  return keys.join(" ");
+};
+
+/**
+ * Escape the value and join the key=value
+ *
+ * @param {String}
+ * @param {Object|String|Number}
+ * @return {String}
+ * @api private
+ */
+function join(key, value) {
+  // Turn any objects into json
+  if(typeof value === "object") value = JSON.stringify(value);
+
+  // If we have a space or quote we need to surround it in quotes
+  if(/[\"\\ ]+/.test(value)) value = '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"';
+
+  return key+"="+value;
+}
+
+/**
  * Merge object properties
  *
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object}
  * @api private
  */
 function merge(a, b) {
@@ -111,6 +176,8 @@ function merge(a, b) {
 /**
  * Clone an object's properties
  *
+ * @param {Object} obj
+ * @return {Object}
  * @api private
  */
 function clone(obj) {
