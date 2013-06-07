@@ -2,7 +2,7 @@
  * Module dependencies
  */
 var proto = require("./proto")
-  , log = require("throttled-log");
+  , log = require("throttled-log")();
 
 /**
  * Root context
