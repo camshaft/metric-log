@@ -6,17 +6,12 @@ describe("metric-log-benchmarks", function(){
 
   var start, suite;
 
-  before(function() {
-    // Don't print to stdout
-    metric.log = function() {};
-  });
-
   beforeEach(function() {
-    start = new Date;
+    start = Date.now();
   });
 
   afterEach(function() {
-    console.log(suite, "\n\t", ITERATIONS/((new Date - start)/1000), "metrics/sec");
+    console.error(suite, "\n\t", ITERATIONS/((Date.now() - start)/1000), "metrics/sec");
   });
 
   it("metric(measure, value)", function() {

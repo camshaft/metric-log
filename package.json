@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/mocha test/metric-log.test",
-    "bench": "NODE_ENV=test ./node_modules/.bin/mocha test/metric-log.bench"
+    "bench": "NODE_ENV=test ./node_modules/.bin/mocha test/metric-log.bench > /dev/null"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "simple-debug": "~1.0.0"
+    "simple-debug": "~1.0.0",
+    "throttled-log": "~0.1.0"
   },
   "devDependencies": {
     "should": "~1.2.2",

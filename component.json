@@ -5,7 +5,8 @@
   "version": "0.2.4",
   "keywords": [],
   "dependencies": {
-    "timshadel/simple-debug": "*"
+    "timshadel/simple-debug": "*",
+    "CamShaft/throttled-log": "*"
   },
   "development": {},
   "license": "MIT",

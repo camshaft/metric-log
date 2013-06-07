@@ -1,7 +1,8 @@
 /**
  * Module dependencies
  */
-var proto = require("./proto");
+var proto = require("./proto")
+  , log = require("throttled-log");
 
 /**
  * Root context
@@ -25,7 +26,7 @@ module.exports = exports = function metric() {
 /**
  * Expose log function
  */
-exports.log = console.log.bind(console);
+exports.log = log;
 
 /**
  * Create the root context
