@@ -132,7 +132,12 @@ function defaults(metric, value, units, props) {
 function format(obj) {
   // Get all of the keys for the context
   var keys = [];
-  for(var key in obj) if(obj[key] !== '') keys.push(join(key, obj[key]));
+  for(var key in obj) {
+    // Keep out blank values
+    if(obj[key] !== '' && obj[key] != undefined) {
+      keys.push(join(key, obj[key]));
+    }
+  }
 
   // Join the key=value
   return keys.join(" ");

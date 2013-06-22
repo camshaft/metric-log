@@ -2,7 +2,7 @@
   "name": "metric-log",
   "repo": "CamShaft/metric-log",
   "description": "Log metrics in a simple key=value format for easy parsing",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "keywords": [],
   "dependencies": {
     "timshadel/simple-debug": "*",
