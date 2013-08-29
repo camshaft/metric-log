@@ -1,11 +1,13 @@
 /**
  * Module dependencies
  */
-var debug = require("simple-debug");
+
+var debug = require('simple-debug');
 
 /**
  * Context Prototype
  */
+
 var proto = {}
 
 /**
@@ -18,6 +20,7 @@ var proto = {}
  * @return {Object}
  * @api public
  */
+
 proto.merge = function() {
   var obj = defaults.apply(null, arguments);
   obj.__proto__ = this._context;
@@ -31,8 +34,9 @@ proto.merge = function() {
  * @return {Context}
  * @api public
  */
+
 proto.use = function(parent) {
-  if(!parent) parent = {};
+  if (!parent) parent = {};
   this._context.__proto__ = parent._context || parent;
   return this;
 };
@@ -45,16 +49,17 @@ proto.use = function(parent) {
  * @return {Function}
  * @api public
  */
+
 proto.profile = function(metric, props) {
   var self = this
     , start = Date.now();
 
   return function(otherProps) {
-    if(!otherProps) otherProps = {};
+    if (!otherProps) otherProps = {};
     else otherProps = clone(otherProps);
 
     otherProps.__proto__ = props;
-    return self(metric, (Date.now() - start), "ms", otherProps);
+    return self(metric, (Date.now() - start), 'ms', otherProps);
   };
 };
 
@@ -65,9 +70,10 @@ proto.profile = function(metric, props) {
  * @return {Context}
  * @api public
  */
+
 proto.debug = function(name) {
   var context = this._context;
-  if(!name) name = context.fn && context.at ? ""+context.fn+":"+context.at : "metric:debug";
+  if (!name) name = context.fn && context.at ? '' + context.fn + ':' + context.at : 'metric:debug';
   this.log = debug(name);
   return this;
 };
@@ -82,6 +88,7 @@ proto.debug = function(name) {
  * @return {String}
  * @api public
  */
+
 proto.format = function() {
   return format(this.merge.apply(this, arguments));
 };
@@ -93,6 +100,7 @@ proto.format = function() {
  * @return {Object}
  * @api public
  */
+
 module.exports = function(obj) {
   return merge(obj, proto);
 };
@@ -107,19 +115,17 @@ module.exports = function(obj) {
  * @return {Object}
  * @api private
  */
+
 function defaults(metric, value, units, props) {
-  if (typeof metric === "string") {
-    var obj = {
-      measure: metric,
-      val: value
-    };
-    if(units) obj.units = units;
-    merge(obj, props);
-    return obj;
-  }
-  else {
-    return clone(metric);
+  if (typeof metric !== 'string') return clone(metric);
+
+  var obj = {
+    measure: metric,
+    val: value
   };
+  if (units) obj.units = units;
+  merge(obj, props);
+  return obj;
 };
 
 /**
@@ -129,12 +135,13 @@ function defaults(metric, value, units, props) {
  * @return {String}
  * @api private
  */
+
 function format(obj) {
   // Get all of the keys for the context
   var keys = [];
   for(var key in obj) {
     // Keep out blank values
-    if(obj[key] !== '' && obj[key] != undefined) {
+    if (obj[key] !== '' && obj[key] != undefined) {
       keys.push(join(key, obj[key]));
     }
   }
@@ -151,14 +158,15 @@ function format(obj) {
  * @return {String}
  * @api private
  */
+
 function join(key, value) {
   // Turn any objects into json
-  if(typeof value === "object") value = JSON.stringify(value);
+  if (typeof value === 'object') value = JSON.stringify(value);
 
   // If we have a space or quote we need to surround it in quotes
-  if(/[\"\\ ]+/.test(value)) value = '"'+value.replace(/\\/g, '\\\\').replace(/"/g,'\\"')+'"';
+  if (/[\"\\ ]+/.test(value)) value = '"' + value.replace(/\\/g, '\\\\').replace(/"/g,'\\"') + '"';
 
-  return key+"="+value;
+  return key + '=' + value;
 }
 
 /**
@@ -169,6 +177,7 @@ function join(key, value) {
  * @return {Object}
  * @api private
  */
+
 function merge(a, b) {
   if (a && b) {
     for (var key in b) {
@@ -185,6 +194,7 @@ function merge(a, b) {
  * @return {Object}
  * @api private
  */
+
 function clone(obj) {
   return merge({}, obj);
 };

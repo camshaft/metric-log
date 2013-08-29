@@ -1,12 +1,14 @@
 /**
  * Module dependencies
  */
-var proto = require("./proto")
-  , log = require("throttled-log")();
+
+var proto = require('./proto')
+  , log = require('throttled-log')();
 
 /**
  * Root context
  */
+
 var root;
 
 /**
@@ -19,6 +21,7 @@ var root;
  * @return {String}
  * @api public
  */
+
 module.exports = exports = function metric() {
   return root.apply(root, arguments);
 };
@@ -26,31 +29,37 @@ module.exports = exports = function metric() {
 /**
  * Expose log function
  */
+
 exports.log = log;
 
 /**
  * Create the root context
  */
+
 exports._root = root = createContext();
 
 /**
  * Extend the root context
  */
+
 exports.context = root.context.bind(root);
 
 /**
  * Profile a function call in the root context
  */
+
 exports.profile = root.profile.bind(root);
 
 /**
  * Expose setting the root's __proto__
  */
+
 exports.use = root.use.bind(root);
 
 /**
  * Expose root format
  */
+
 exports.format = root.format.bind(root);
 
 /**
@@ -60,6 +69,7 @@ exports.format = root.format.bind(root);
  * @return {Logger}
  * @api public
  */
+
 function createContext(obj) {
   // Create a new context
   function Context() {
