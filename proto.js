@@ -64,6 +64,30 @@ proto.profile = function(metric, props) {
 };
 
 /**
+ * Print a measurement
+ */
+
+proto.measure = function(metric, value, units, props) {
+  this(metric, value, units, props);
+};
+
+/**
+ * Print a count
+ */
+
+proto.count = function(metric, value, units, props) {
+  this(metric, value, units, props, 'count');
+};
+
+/**
+ * Print a sample
+ */
+
+proto.sample = function(metric, value, units, props) {
+  this(metric, value, units, props, 'sample');
+};
+
+/**
  * Set debug mode for the context
  *
  * @param {String} name
@@ -116,16 +140,12 @@ module.exports = function(obj) {
  * @api private
  */
 
-function defaults(metric, value, units, props) {
+function defaults(metric, value, units, props, prefix) {
   if (typeof metric !== 'string') return clone(metric);
 
-  var obj = {
-    measure: metric,
-    val: value
-  };
-  if (units) obj.units = units;
-  merge(obj, props);
-  return obj;
+  var obj = {};
+  obj[(prefix || 'measure') + '#' + metric] = '' + value + (units || '');
+  return merge(obj, props);
 };
 
 /**
