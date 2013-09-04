@@ -51,6 +51,26 @@ exports.context = root.context.bind(root);
 exports.profile = root.profile.bind(root);
 
 /**
+ * Expose metric.measure in the root context
+ */
+exports.measure = root.measure.bind(root);
+
+/**
+ * Expose metric.count in the root context
+ */
+exports.count = root.count.bind(root);
+
+/**
+ * Expose metric.event in the root context
+ */
+exports.event = root.event.bind(root);
+
+/**
+ * Expose metric.sample in the root context
+ */
+exports.sample = root.sample.bind(root);
+
+/**
  * Expose setting the root's __proto__
  */
 

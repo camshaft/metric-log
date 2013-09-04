@@ -19,36 +19,36 @@ describe("metric-log", function(){
   describe("metric(metric, value)", function(){
     it("should work", function() {
       metric("request", 1);
-      str.should.eql("measure=request val=1");
+      str.should.eql("measure#request=1");
     });
 
     it('should surround \' \' with "', function() {
       metric("request", "this is a test");
-      str.should.eql('measure=request val="this is a test"');
+      str.should.eql('measure#request="this is a test"');
     });
 
     it('should escape "', function() {
       metric("request", 'this is a "test"');
-      str.should.eql('measure=request val="this is a \\\"test\\\""');
+      str.should.eql('measure#request="this is a \\\"test\\\""');
     });
 
     it('should not print blank values', function() {
       metric("request", '');
-      str.should.eql('measure=request');
+      str.should.eql('');
     });
   });
 
   describe("metric(metric, value, units)", function(){
     it("should work", function() {
       metric("response_time", 1, "ms");
-      str.should.eql("measure=response_time val=1 units=ms");
+      str.should.eql("measure#response_time=1ms");
     });
   });
 
   describe("metric(metric, value, units, props)", function(){
     it("should work", function() {
       metric("response_time", 1, "ms", {testing: 123});
-      str.should.eql("measure=response_time val=1 units=ms testing=123");
+      str.should.eql("measure#response_time=1ms testing=123");
     });
   });
 
@@ -66,6 +66,39 @@ describe("metric-log", function(){
     });
   });
 
+  describe("metric.measure(metric, value, units, props)", function(){
+    it("should work", function() {
+      metric.measure("search.api.latency", 1, "ms", {testing: 123});
+      str.should.eql("measure#search.api.latency=1ms testing=123");
+    });
+  });
+
+  describe("metric.count(metric, value, props)", function(){
+    it("should work", function() {
+      metric.count("action.login.success", 1, {testing: 123});
+      str.should.eql("count#action.login.success=1 testing=123");
+    });
+
+    it("should require only first parameter and defaut to 1", function(){
+      metric.count("action.login.failure");
+      str.should.eql("count#action.login.failure=1");
+    });
+  });
+
+  describe("metric.sample(metric, value, units, props)", function(){
+    it("should work", function() {
+      metric.sample("search.hr.dyno1.load_avg_5", 232, "mb", {testing: 123});
+      str.should.eql("sample#search.hr.dyno1.load_avg_5=232mb testing=123");
+    });
+  });
+
+  describe("metric.event(metric, value, props)", function(){
+    it("should work", function() {
+      metric.event("title", "deploy", {"event#start_time": 1234567890, source: "dyno5"});
+      str.should.eql("event#title=deploy event#start_time=1234567890 source=dyno5");
+    });
+  });
+
   describe("metric.profile()", function() {
     it("should return a callable function to profile", function(done) {
       var profile = metric.profile("testing123");
@@ -73,7 +106,7 @@ describe("metric-log", function(){
         profile({test:123});
 
         str.should.match(/test=123/);
-        str.should.match(/measure=testing123/);
+        str.should.match(/measure#testing123/);
 
         done();
       }, 50);
@@ -91,31 +124,31 @@ describe("metric-log", function(){
     describe("context(metric, value)", function(){
       it("should work", function(){
         context("request", 1);
-        str.should.eql("measure=request val=1 host=my.host.com");
+        str.should.eql("measure#request=1 host=my.host.com");
       });
 
       it('should surround \' \' with "', function() {
         context("request", "this is a test");
-        str.should.eql('measure=request val="this is a test" host=my.host.com');
+        str.should.eql('measure#request="this is a test" host=my.host.com');
       });
 
       it('should escape "', function() {
         context("request", 'this is a "test"');
-        str.should.eql('measure=request val="this is a \\\"test\\\"" host=my.host.com');
+        str.should.eql('measure#request="this is a \\\"test\\\"" host=my.host.com');
       });
     });
 
     describe("context(metric, value, units)", function(){
       it("should work", function(){
         context("response_time", 1, "ms");
-        str.should.eql("measure=response_time val=1 units=ms host=my.host.com");
+        str.should.eql("measure#response_time=1ms host=my.host.com");
       });
     });
 
     describe("context(metric, value, units, props)", function(){
       it("should work", function() {
         context("response_time", 1, "ms", {testing: 123});
-        str.should.eql("measure=response_time val=1 units=ms testing=123 host=my.host.com");
+        str.should.eql("measure#response_time=1ms testing=123 host=my.host.com");
       });
     });
 
@@ -138,8 +171,8 @@ describe("metric-log", function(){
         var end = context.profile('my-api-test-call');
         setTimeout(function() {
           end();
-          str.should.match(/measure=my-api-test-call/);
-          str.should.match(/val=[0-9]+/);
+          str.should.match(/measure#my-api-test-call/);
+          str.should.match(/measure#my-api-test-call=[0-9]+/);
           done();
         }, 50);
       });
@@ -150,8 +183,8 @@ describe("metric-log", function(){
         var end = context.profile('my-api-test-call');
         setTimeout(function() {
           end({at:"info", lib:"my-lib"});
-          str.should.match(/measure=my-api-test-call/);
-          str.should.match(/val=[0-9]+/);
+          str.should.match(/measure#my-api-test-call/);
+          str.should.match(/measure#my-api-test-call=[0-9]+/);
           str.should.match(/at=info/);
           str.should.match(/lib=my-lib/);
           done();
@@ -219,11 +252,11 @@ describe("metric-log", function(){
 
         setTimeout(function() {
           call2({callId:2});
-          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/measure#my-api-test-call/);
           str.should.match(/callId=2/);
 
           call1({callId:1});
-          str.should.match(/measure=my-api-test-call/);
+          str.should.match(/measure#my-api-test-call/);
           str.should.match(/callId=1/);
           done();
         }, 50);
