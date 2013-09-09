@@ -75,8 +75,17 @@ proto.measure = function(metric, value, units, props) {
  * Print a count
  */
 
-proto.count = function(metric, value, units, props) {
-  this(metric, value, units, props, 'count');
+proto.count = function(metric, value, props) {
+  var countVal = value || 1;
+  this(metric, countVal, "", props, 'count');
+};
+
+/**
+ * Print a event
+ */
+
+proto.event = function(metric, value, props) {
+  this(metric, value, "", props, 'event');
 };
 
 /**
