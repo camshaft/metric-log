@@ -1,6 +1,6 @@
 {
   "name": "metric-log",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Log metrics with 'key=value'",
   "main": "index.js",
   "scripts": {
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CamShaft/metric-log.git"
+    "url": "https://github.com/camshaft/metric-log.git"
   },
   "keywords": [
     "log",
     "metrics",
     "metric"
   ],
-  "author": "Cameron Bytheway <cameron@nujii.com>",
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "simple-debug": "~1.0.0",
+    "debug": "~0.8.1",
     "throttled-log": "~0.1.0"
   },
   "devDependencies": {

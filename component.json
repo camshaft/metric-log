@@ -2,10 +2,10 @@
   "name": "metric-log",
   "repo": "camshaft/metric-log",
   "description": "Log metrics in a simple key=value format for easy parsing",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [],
   "dependencies": {
-    "timshadel/simple-debug": "*",
+    "visionmedia/debug": "^0.8.1",
     "camshaft/throttled-log": "*"
   },
   "development": {},
