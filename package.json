@@ -20,11 +20,11 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "debug": "~0.8.1",
+    "debug": "^4.1.1",
     "throttled-log": "~0.1.0"
   },
   "devDependencies": {
-    "should": "~1.2.2",
-    "mocha": "~1.8.2"
+    "mocha": "^6.0.2",
+    "should": "~1.2.2"
   }
 }
